@@ -48,7 +48,6 @@ Icon
 .dropbox*
 
 # Project Specific Ignores
-.gitignore
 uploads/*
 scripts/*
 sql_db/file_system_manager.db
