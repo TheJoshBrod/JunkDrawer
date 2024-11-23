@@ -1,7 +1,7 @@
 """File path object."""
 
-class filepath:
-
+class FilePath:
+    """Object to interact with file path strings."""
     def __init__(self, path: str):
         """Constructs a filepath object"""
         self.path_list = path.split("/")[1:]
@@ -13,7 +13,7 @@ class filepath:
             self.extension = ".".join(file_name.split(".")[1:])
 
         self.path = "/".join(self.path_list[:-1]) + "/"
-        
+
 
     def __getitem__(self, index):
         """Indexes into path list."""
@@ -23,8 +23,3 @@ class filepath:
     def __len__(self):
         """Returns length of path list."""
         return len(self.path_list)
-
-    def __str__(self):
-        """Returns a string representations"""
-        # return [self.name, self.path, self.extension]
-        return "HEELLLOOO"

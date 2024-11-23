@@ -1,0 +1,23 @@
+.file-system{
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.file-object {
+    display: flex;
+    justify-content: space-between;
+    max-width: 80%;
+    border: 1px solid #ccc; /* Remove quotes from the values */
+    border-radius: 5px; /* Remove quotes from the values */
+    background-color: aqua;
+    margin: 20px auto 20px auto;
+    margin-left: auto; /* Push the element to the right */
+    margin-right: 0;   /* Ensure it's aligned to the far right */
+}
+
+
+.file-icon{
+    width:50px;
+    height:39px;
+}

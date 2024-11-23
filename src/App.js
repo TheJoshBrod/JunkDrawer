@@ -1,23 +1,18 @@
-import logo from './logo.svg';
 import './App.css';
+import FileSearch from './Search';
+import FileSystem from './System';
 
 function App() {
+  const queryParams = new URLSearchParams(window.location.search);
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="Header">
+        <img src="./logo.svg" alt="Logo" />
+        <FileSearch />
+      </div>
+      <FileSystem file_directory_id={queryParams.get("file_id")}/>
     </div>
   );
 }

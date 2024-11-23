@@ -2,9 +2,62 @@
 import sqlite3
 import os
 import uuid
+import math
 from pathlib import Path
 from markupsafe import escape
-from filepath import filepath
+from filepath import FilePath
+
+def update_access_time(file_id: str):
+    """Changes the access time of a file to be the present."""
+    with sqlite3.connect('sql_db/file_system_manager.db') as conn:
+        cur = conn.cursor()
+        update_query = "UPDATE filesystem SET accessed_at = CURRENT_TIMESTAMP WHERE id = ?"
+        cur.execute(update_query, (file_id,))
+        conn.commit()
+
+def create_child(result: list) -> dict:
+    """Extracts child information into dictionary."""
+    extension = result[0]
+    name = result[1]
+    print(name)
+    file_sizes = ["B", "KB", "MB", "GB", "TB"]
+
+
+    is_file = result[3]
+
+    size = result[2]
+    if is_file and size != "0":
+        int_size = int(size)
+        log_size = int(math.log(int_size, 1000))
+        size = str(round(int_size/(1000 ** (log_size)), 2)) + " " + file_sizes[log_size]
+    else:
+        size = "0 B"
+
+    created_at = result[4]
+    id_num = result[5]
+
+    child = {"extension": extension,
+                "name": name,
+                "size": size,
+                "is_file": is_file,
+                "created_at": created_at,
+                "id": id_num}
+    return child
+
+def get_list_of_children(parent_id: str) -> list:
+    """Returns a list of all children."""
+    with sqlite3.connect('sql_db/file_system_manager.db') as conn:
+        cur = conn.cursor()
+        select_query = """SELECT extension, name, file_size, is_file, created_at, id
+                            FROM filesystem
+                            WHERE parent_id = ?"""
+        cur.execute(select_query, (parent_id,))
+        results = cur.fetchall()
+    children = []
+    for result in results:
+        child = create_child(result)
+        children.append(child)
+    return children
 
 def file_id_exists(file_id: str) -> bool:
     """Takes in file uuid string and returns if file exists in file system"""
@@ -35,9 +88,10 @@ def get_file_name(file_id: str) -> str:
 
 
 
-def valid_new_filepath(fileobject: filepath, checking_for_file: int = 1) -> str:
-    """Checks if file path exists and file/dir exists (-1: does NOT exist, parent_id: DOES exist)."""
-    
+def valid_new_filepath(fileobject: FilePath, checking_for_file: int = 1) -> str:
+    """Checks if file path exists and file/dir exists 
+        (-1: does NOT exist, parent_id: DOES exist)."""
+
     # Create connection to database
     with sqlite3.connect('sql_db/file_system_manager.db') as conn:
         cur = conn.cursor()
@@ -53,14 +107,12 @@ def valid_new_filepath(fileobject: filepath, checking_for_file: int = 1) -> str:
 
         # Both File AND Dir do NOT exist return "Not Found"
         if len(results) == 0:
-            print(1)
             return "0"
 
         # If end of path AND found correct type, return "Found"
         if len(fileobject) == 1:
             for result in results:
                 if checking_for_file == result[0]:
-                    print(2)
                     return "-1"
             return parent_id
 
@@ -76,11 +128,9 @@ def valid_new_filepath(fileobject: filepath, checking_for_file: int = 1) -> str:
 
             # If directory does not exist, return "Not Found"
             if len(results) == 0:
-                print(3)
                 return "-1"
             # If ONLY file exists, return "Not Found"
             if len(results) == 1 and results[0][1]:
-                print(4)
                 return "-1"
 
             parent_id = results[0][1]
@@ -93,26 +143,21 @@ def valid_new_filepath(fileobject: filepath, checking_for_file: int = 1) -> str:
         cur.execute(find_obj_query, (child_name, parent_id))
         results = cur.fetchall()
 
-        print(f"Searching for: {child_name}:{parent_id}")
-
         # If no results, return "Not Found"
         if len(results) == 0:
-            print(5)
             return parent_id
 
         # If end of path AND found correct type, return "Found"
         for result in results:
             if checking_for_file == result[0]:
-                print(f"{checking_for_file}:{result[0]}")
-                print(6)
                 return "-1"
-        print(7)
+
         # Child does not exist, return "Not Found"
         return parent_id
 
 
-def create_file(file_content, virtual_file_path: filepath, file_size: int) -> str:
-    """Creates a local copy of the file and entry into filesystem returns uuid. Returns id and parent_id."""
+def create_file(file_content, virtual_file_path: FilePath, file_size: int) -> str:
+    """Creates a local copy of the file and entry into filesystem. Returns id and parent_id."""
 
     parent_id = valid_new_filepath(virtual_file_path)
     if parent_id == "-1":
@@ -131,11 +176,11 @@ def create_file(file_content, virtual_file_path: filepath, file_size: int) -> st
     with sqlite3.connect('sql_db/file_system_manager.db') as conn:
         cur = conn.cursor()
 
-        insert_query = """INSERT INTO filesystem 
+        insert_query = """INSERT INTO filesystem
                         (id, name, extension, parent_id, file_size, is_file)
                         VALUES (?, ?, ?, ?, ?, ?)"""
-        
-        
+
+
         params = (
             id_num,
             virtual_file_path.name,
@@ -148,8 +193,8 @@ def create_file(file_content, virtual_file_path: filepath, file_size: int) -> st
         conn.commit()
     return id_num, parent_id
 
-def create_directory(virtual_file_path: filepath) -> str:
-    """Creates a local copy of the file and entry into filesystem returns uuid. Returns id and parent_id."""
+def create_directory(virtual_file_path: FilePath) -> list[str]:
+    """Creates a local copy of the file. Returns id and parent_id."""
 
     parent_id = valid_new_filepath(virtual_file_path, 0)
     if parent_id == "-1":
@@ -161,11 +206,10 @@ def create_directory(virtual_file_path: filepath) -> str:
     with sqlite3.connect('sql_db/file_system_manager.db') as conn:
         cur = conn.cursor()
 
-        insert_query = """INSERT INTO filesystem 
+        insert_query = """INSERT INTO filesystem
                         (id, name, extension, parent_id, file_size, is_file)
                         VALUES (?, ?, ?, ?, ?, ?)"""
-        
-        print(type(virtual_file_path))
+
         params = (
             id_num,
             virtual_file_path.name,
