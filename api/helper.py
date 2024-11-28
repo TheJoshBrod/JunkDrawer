@@ -19,12 +19,10 @@ def create_child(result: list) -> dict:
     """Extracts child information into dictionary."""
     extension = result[0]
     name = result[1]
-    print(name)
-    file_sizes = ["B", "KB", "MB", "GB", "TB"]
-
 
     is_file = result[3]
 
+    file_sizes = ["B", "KB", "MB", "GB", "TB"]
     size = result[2]
     if is_file and size != "0":
         int_size = int(size)
@@ -75,90 +73,55 @@ def get_file_name(file_id: str) -> str:
     with sqlite3.connect('sql_db/file_system_manager.db') as conn:
         cur = conn.cursor()
         select_query = "SELECT name FROM filesystem WHERE id = ? AND is_file = TRUE"
-        print(file_id)
         cur.execute(select_query, (file_id,))
         results = cur.fetchall()
 
     if len(results) == 0:
-        return ""
+        return "-1"
 
     file_name = results[0][0]
-    print(file_name)
     return file_name
 
-
-
-def valid_new_filepath(fileobject: FilePath, checking_for_file: int = 1) -> str:
-    """Checks if file path exists and file/dir exists 
-        (-1: does NOT exist, parent_id: DOES exist)."""
+def find_child(parent_id: str, child_name: str, is_file: bool) -> str:
+    """Finds child_id given parent_id and child_name."""
 
     # Create connection to database
     with sqlite3.connect('sql_db/file_system_manager.db') as conn:
         cur = conn.cursor()
-
-        # Check if parent directory exists and starts at root
-        parent_name = fileobject[0]
-        parent_id = "0"
-
-        find_directory_query = """SELECT is_file, id FROM filesystem
-                                    WHERE name = ? AND parent_id = ?"""
-        cur.execute(find_directory_query, (parent_name, parent_id))
+        find_directory_query = """SELECT id FROM filesystem
+                                    WHERE name = ? AND parent_id = ? AND is_file = ?"""
+        cur.execute(find_directory_query, (child_name, parent_id, is_file))
         results = cur.fetchall()
+        if not results:
+            return "-1"
+        return results[0][0]
 
-        # Both File AND Dir do NOT exist return "Not Found"
-        if len(results) == 0:
-            return "0"
+def valid_new_filepath(fileobject: FilePath, checking_for_file: bool = True) -> str:
+    """Finds parent_id of lowest child of file/dir 
+        (-1: does NOT exist, parent_id: DOES exist)."""
 
-        # If end of path AND found correct type, return "Found"
-        if len(fileobject) == 1:
-            for result in results:
-                if checking_for_file == result[0]:
-                    return "-1"
-            return parent_id
+    # Root parent_id
+    parent_id = "0"
 
-        # Parent id of existing directory
-        parent_id = results[0][1]
+    # Traverse File System Tree
+    for path in fileobject[:-1]:
+        parent_id = find_child(parent_id, path, False)
+        if parent_id == "-1":
+            return "-1"
 
-        # Continue until last item on path
-        for directory_name in fileobject[1:-1]:
-            find_directory_query = """SELECT is_file, id FROM filesystem
-                                        WHERE name = ? AND parent_id = ?"""
-            cur.execute(find_directory_query, (directory_name, parent_id))
-            results = cur.fetchall()
+    # Check if child already exists
+    child_id = find_child(parent_id, fileobject[-1], checking_for_file)
+    if child_id != "-1":
+        return "-1"
 
-            # If directory does not exist, return "Not Found"
-            if len(results) == 0:
-                return "-1"
-            # If ONLY file exists, return "Not Found"
-            if len(results) == 1 and results[0][1]:
-                return "-1"
-
-            parent_id = results[0][1]
-
-        # Retrieve last itme in path's name
-        child_name = fileobject[-1]
-
-        # Check if child exists
-        find_obj_query = "SELECT is_file, id FROM filesystem WHERE name = ? AND parent_id = ?"
-        cur.execute(find_obj_query, (child_name, parent_id))
-        results = cur.fetchall()
-
-        # If no results, return "Not Found"
-        if len(results) == 0:
-            return parent_id
-
-        # If end of path AND found correct type, return "Found"
-        for result in results:
-            if checking_for_file == result[0]:
-                return "-1"
-
-        # Child does not exist, return "Not Found"
-        return parent_id
+    # return parent_id of the child
+    return parent_id
 
 
 def create_file(file_content, virtual_file_path: FilePath, file_size: int) -> str:
     """Creates a local copy of the file and entry into filesystem. Returns id and parent_id."""
 
+    # Is this a valid path? (do parents exist and does child already exist)?
     parent_id = valid_new_filepath(virtual_file_path)
     if parent_id == "-1":
         return "",""
@@ -168,18 +131,19 @@ def create_file(file_content, virtual_file_path: FilePath, file_size: int) -> st
     filename = f"{id_num}"
     physical_filepath = os.path.join('uploads', filename)
 
+    # Save file to file system
     try:
         file_content.save(physical_filepath)
     except:
         return "",""
 
+    # Enter Entry into the DB for the new file
     with sqlite3.connect('sql_db/file_system_manager.db') as conn:
         cur = conn.cursor()
 
         insert_query = """INSERT INTO filesystem
                         (id, name, extension, parent_id, file_size, is_file)
                         VALUES (?, ?, ?, ?, ?, ?)"""
-
 
         params = (
             id_num,
@@ -189,14 +153,18 @@ def create_file(file_content, virtual_file_path: FilePath, file_size: int) -> st
             file_size,
             True
             )
+
         cur.execute(insert_query, params)
         conn.commit()
+
+    # Return relevant info for new file
     return id_num, parent_id
 
 def create_directory(virtual_file_path: FilePath) -> list[str]:
     """Creates a local copy of the file. Returns id and parent_id."""
 
-    parent_id = valid_new_filepath(virtual_file_path, 0)
+    # Is this a valid path? (do parents exist and does child already exist)?
+    parent_id = valid_new_filepath(virtual_file_path, False)
     if parent_id == "-1":
         return "",""
 
@@ -211,13 +179,14 @@ def create_directory(virtual_file_path: FilePath) -> list[str]:
                         VALUES (?, ?, ?, ?, ?, ?)"""
 
         params = (
-            id_num,
-            virtual_file_path.name,
-            "",
-            parent_id,
-            0,
-            False
+            id_num,                   # Auto generated id number of directory
+            virtual_file_path.name,   # What is the name of the new directory
+            "",                       # extension (always "" for directory)
+            parent_id,                # id of parent directory
+            0,                        # Initialize Directory of size 0
+            False                     # Is NOT a file
             )
+
         cur.execute(insert_query, params)
         conn.commit()
     return id_num, parent_id

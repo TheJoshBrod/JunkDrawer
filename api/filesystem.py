@@ -40,8 +40,6 @@ def get_children(file_id):
 
     removed_id_children = []
     for child in children:
-        if "id" in child:
-            del child["id"]
         removed_id_children.append(child)
     return jsonify(removed_id_children), 200
 
@@ -62,7 +60,6 @@ def upload_file():
     # Calculate the size of the file
     file_content.seek(0, 2)
     file_size = file_content.tell()
-    print(file_size)
 
     # Max file size 1MB
     if file_size > 1e6:
@@ -72,10 +69,10 @@ def upload_file():
 
     id_num, parent_id = create_file(file_content, file_path, file_size)
     if id_num == "" and parent_id == "":
-        return jsonify({"message": "File uploaded unsucessfuly"}), 400
+        return jsonify({"message": "Unsuccessful File Upload"}), 400
 
     # Return success message with the unique file ID
-    return jsonify({"message": f"File uploaded successfully with ID: {id_num}"}), 200
+    return jsonify({"message": f"File Uploaded Successfully with ID: {id_num}"}), 200
 
 
 @app.route("/upload_directory", methods=['POST'])
@@ -90,10 +87,10 @@ def upload_directory():
 
     id_num, parent_id = create_directory(file_path)
     if id_num == "" and parent_id == "":
-        return jsonify({"message": "Created directory unsuccessfuly"}), 400
+        return jsonify({"message": "Unsuccessful Directory Creation"}), 400
 
     # Return success message with the unique file ID
-    return jsonify({"message": f"Directory created successfully with ID: {id_num}"}), 200
+    return jsonify({"message": f"Directory Created Successfully with ID: {id_num}"}), 200
 
 
 

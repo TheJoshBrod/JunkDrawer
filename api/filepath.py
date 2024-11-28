@@ -23,3 +23,7 @@ class FilePath:
     def __len__(self):
         """Returns length of path list."""
         return len(self.path_list)
+
+    def __str__(self):
+        """Creates a string representation of the filepath."""
+        return self.path
