@@ -51,7 +51,7 @@ Icon
 uploads/*
 scripts/*
 sql_db/file_system_manager.db
-
+notes/
 
 # White Lists
 !uploads/.gitkeep

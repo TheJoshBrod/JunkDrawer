@@ -1,19 +1,51 @@
+.file-system-header{
+    margin-top: 5%;
+    max-height: 80px;
+    min-width: 400px;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: rgb(226, 226, 226);
+}
+
 .file-system{
     padding: 20px;
-    border: 1px solid #ccc;
     border-radius: 5px;
+    min-width: 500px;
 }
 
 .file-object {
     display: flex;
     justify-content: space-between;
     max-width: 80%;
-    border: 1px solid #ccc; /* Remove quotes from the values */
-    border-radius: 5px; /* Remove quotes from the values */
-    background-color: aqua;
+    border-radius: 5px; 
+    background-color: rgb(226, 226, 226);
     margin: 20px auto 20px auto;
-    margin-left: auto; /* Push the element to the right */
-    margin-right: 0;   /* Ensure it's aligned to the far right */
+    margin-left: auto; 
+    margin-right: 0;
+}
+
+.file-object:hover{
+    background-color: rgb(79, 79, 79);
+    color: rgb(182, 182, 182)
+}
+
+@keyframes loading-files {
+    0%   {background-color: rgb(124, 124, 124);}
+    50%  {background-color: rgb(79, 79, 79);}
+    100% {background-color: rgb(124, 124, 124);}
+}
+
+.temp-file-object{
+    display: flex;
+    justify-content: space-between;
+    max-width: 80%;
+    border-radius: 5px; 
+    margin: 20px auto 20px auto;
+    margin-left: auto; 
+    margin-right: 0;
+    animation-name: loading-files;
+    animation-duration: 0.75s;
+    animation-iteration-count: infinite;
 }
 
 

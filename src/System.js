@@ -1,11 +1,8 @@
-import style from "./System.css"
+import "./System.css"
 import React, { useEffect, useState } from 'react';
 
 // FileObject Component
-const FileObject = ({ file_name, file_type, file_extension, file_created_at, file_size, index, parent_id }) => {
-
-  const [fileName, setFileName] = useState(file_name);
-  const [parentId, setParentId] = useState(parent_id);
+const FileObject = ({ file_name, file_type, file_extension, file_created_at, file_size, index, parent_id, child_id }) => {
 
   const downloadFile = async (fileName, parentId) => {
   
@@ -37,30 +34,60 @@ const FileObject = ({ file_name, file_type, file_extension, file_created_at, fil
     }
   };
   
+  const extension_img = (file_extension) => {
+    
+    // Make sure extension is in lowercase
+    const format_extension = file_extension.toLowerCase();
+
+    // Is file extension an image?
+    const image_extensions = ["png", "gif", "jpeg", "jpg", "bitmap", "webp", "svg", "tiff", "tif", "heif", "heic", "ico"];
+    if (image_extensions.find((extension) => extension === format_extension) ){
+      return "image.png";
+    }
+
+    return "unknown-file-type.png";
+  };
+
   return (
     <>
       {file_type === 1 ? 
         /*File*/
         (
         <div id={index} className="file-object" onClick={() => downloadFile()}>
-          <img className="file-icon" src="/file_icons/unknown-file-type.png"/>
+          <img className="file-icon" alt="Representation of file type" src={`/file_icons/${extension_img(file_extension)}`}/>
           <p> {file_name}</p>
           <p> {file_size}</p>
           <p> {file_created_at} </p>
         </div>
         )
         
-        : 
+        :
+        
+        file_type === 0 ?
 
         /*Directory*/
         (
-        <div id={index} className="file-object">
-          <img className="file-icon" src="/file_icons/directory.png"/>
+        <div id={index} className="file-object" onClick={() => window.open(`http://localhost:3000/?file_id=${child_id}`, '_self')}>
+          <img className="file-icon" alt="Representation of directory" src="/file_icons/directory.png"/>
           <p> {file_name}</p>
           <p> {file_size}</p>
           <p> {file_created_at} </p>
         </div>
       )
+    
+      :
+
+      
+      /*Temporary Empty FileObject*/
+      (
+        <div id={index} className="temp-file-object">
+          <p> {""} </p>
+          <p> {file_name}</p>
+          <p> {file_size}</p>
+          <p> {file_created_at} </p>
+        </div>
+      )
+
       }
     </>
     
@@ -71,22 +98,77 @@ const FileObject = ({ file_name, file_type, file_extension, file_created_at, fil
 const Filesystem = ({ file_directory_id }) => {
   const [parentId, setParentId] = useState(file_directory_id);
   const [children, setChildren] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:5000/get_children/${parentId}`)
-      .then(response => response.json())
-      .then(data => {
-        setChildren(data);
-      })
-      .catch(error => console.error('Error fetching children:', error));
+    const interval = setInterval(() => {
+      fetch(`http://127.0.0.1:5000/get_children/${parentId}`)
+        .then((response) => response.json())
+        .then((data) => {
+          setChildren(data);
+        })
+        .catch((error) => console.error("Error fetching children:", error))
+        .finally(setLoading(false));
+    }, 1000);
+  
+    return () => clearInterval(interval);
   }, [parentId]);
 
-  return (
-    <div className="file-system">
-      <h3>Filesystem</h3>
-      <p>Browse files and folders:</p>
 
-      {children.length > 0 ? (
+  const placeholderData = Array.from({ length: 10 }).map((_, index) => ({
+    name: `Loading...`,
+    is_file: -1, 
+    extension: '',
+    created_at: '',
+    size: '',
+    id: '',
+  }));
+
+  const handleDragOver = (event) => {
+    event.preventDefault();
+  };
+
+    const uploadFile = (event) => {
+      event.preventDefault();
+      
+      const file = event.dataTransfer ? event.dataTransfer.files[0] : event.target.files[0];
+    
+      if (file) {
+        const formData = new FormData();
+        formData.append('content', file);
+        formData.append('parentId', file_directory_id);
+        formData.append('filename', file.name)
+
+        fetch('http://127.0.0.1:5000/upload_default_file', {
+          method: 'POST',
+          body: formData,
+        }).catch((error) => console.error("Error fetching children:", error))
+      };
+    }
+
+  return (
+    <div className="file-system" onDragOver={handleDragOver} onDrop={uploadFile}>
+      <div className="file-system-header">
+        <h3>Filesystem</h3>
+        <p>Browse files and folders:</p>
+      </div>
+      <div className="file-objects">
+      {loading ? (
+          /* No files/directories found */
+        placeholderData.map((child, index) => (
+          <FileObject
+            key={index}
+            index={index}
+            file_name={child.name}
+            file_type={child.is_file}
+            file_extension={child.extension}
+            file_created_at={child.created_at}
+            file_size={child.size}
+            parent_id={parentId}
+            child_id={child.id}
+          />
+        ))
+      ) : (
         /* Create all files/directories */
         children.map((child, index) => (
           <FileObject
@@ -97,12 +179,11 @@ const Filesystem = ({ file_directory_id }) => {
             file_created_at={child.created_at}
             file_size={child.size}
             parent_id={parentId}
+            child_id={child.id}
           />
         ))
-      ) : (
-        /* No files/directories found */
-        <p>No files or folders found.</p>
       )}
+      </div>
     </div>
   );
 };

@@ -3,7 +3,8 @@ from filepath import FilePath
 from flask_cors import CORS
 from flask import Flask, send_file, request, jsonify
 from helper import (file_id_exists, get_file_name, create_file,
-                    create_directory, get_list_of_children, update_access_time)
+                    create_directory, get_list_of_children, update_access_time,
+                    create_default_file)
 
 
 app = Flask(__name__)
@@ -74,6 +75,38 @@ def upload_file():
     # Return success message with the unique file ID
     return jsonify({"message": f"File Uploaded Successfully with ID: {id_num}"}), 200
 
+@app.route("/upload_default_file", methods=['POST'])
+def upload_default_file():
+    """Creates user uploaded file to appropriate directory."""
+
+
+    # Verify file was uploaded
+    if 'content' not in request.files:
+        return jsonify({"error": "No file part"}), 400
+
+    # Get the uploaded file
+    file_content = request.files['content']
+    parent_id = request.form.get('parentId')
+    filename = request.form.get('filename')
+
+
+    # Calculate the size of the file
+    file_content.seek(0, 2)
+    file_size = file_content.tell()
+
+    # Max file size 1MB
+    if file_size > 1e6:
+        return jsonify({"message": "File too large (max file size 1MB)"}), 400
+
+    file_content.seek(0)
+
+    id_num, parent_id = create_default_file(file_content, parent_id, file_size, filename)
+
+    if id_num == "" and parent_id == "":
+        return jsonify({"message": "Unsuccessful File Upload"}), 400
+
+    # Return success message with the unique file ID
+    return jsonify({"message": f"File Uploaded Successfully with ID: {id_num}"}), 200
 
 @app.route("/upload_directory", methods=['POST'])
 def upload_directory():
