@@ -4,7 +4,7 @@ from flask_cors import CORS
 from flask import Flask, send_file, request, jsonify
 from helper import (file_id_exists, get_file_name, create_file,
                     create_directory, get_list_of_children, update_access_time,
-                    create_default_file)
+                    create_default_file, remove_file)
 
 
 app = Flask(__name__)
@@ -125,6 +125,29 @@ def upload_directory():
     # Return success message with the unique file ID
     return jsonify({"message": f"Directory Created Successfully with ID: {id_num}"}), 200
 
+@app.route("/delete_file", methods=['POST'])
+def delete_file():
+    """Deletes file."""
+    data = request.get_json()
+    keys = list(data.keys())
+
+    if 'parentId' not in keys:
+        return jsonify({"error": "Parent not provided"}), 400
+    if 'childId' not in keys:
+        return jsonify({"error": "Child not provided"}), 400
+    if 'filename' not in keys:
+        return jsonify({"error": "Filename not provided"}), 400
+
+    # Extract the arguments
+    parent_id = data['parentId']
+    child_id = data['childId']
+    filename = data['filename']
+
+    success = remove_file(parent_id, child_id, filename)
+    if not success:
+        return jsonify({"message": "Unsuccessful Deletion of File"}), 400
+
+    return jsonify({"message": f"Successfully deleted {filename}"}), 200
 
 
 if __name__ == "__main__":

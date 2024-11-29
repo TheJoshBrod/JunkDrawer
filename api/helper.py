@@ -19,7 +19,8 @@ def update_access_time(file_id: str):
         cur.execute(update_query, (file_id,))
         conn.commit()
 
-def create_new_fileobject(id_num, virtual_file_name, extension, parent_id, file_size, is_file) -> bool:
+def create_new_fileobject(id_num, virtual_file_name,
+                          extension, parent_id, file_size, is_file) -> bool:
     """Creates a new fileobject entry."""
 
     # Enter Entry into the DB for the new fileobject
@@ -41,6 +42,35 @@ def create_new_fileobject(id_num, virtual_file_name, extension, parent_id, file_
 
         cur.execute(insert_query, params)
         conn.commit()
+
+def delete_fileobject(id_num, virtual_file_name, parent_id, is_file=True) -> bool:
+    """Deletes a fileobject entry."""
+
+    # Remove Entry from the DB for the existing fileobject
+    with sqlite3.connect('sql_db/file_system_manager.db') as conn:
+        cur = conn.cursor()
+
+        deletion_query = """DELETE FROM filesystem
+                        WHERE id = ? AND name = ? AND parent_id = ? AND is_file = ?
+                        """
+
+        params = (
+            id_num,
+            virtual_file_name,
+            parent_id,
+            is_file
+            )
+
+        # Executes deletion
+        cur.execute(deletion_query, params)
+
+        # Checks how many rows were removed
+        cur.execute("SELECT changes()")
+        rows_modified = cur.fetchall()[0][0]
+
+        conn.commit()
+
+    return rows_modified == 1
 
 # ***************************************************************
 # Select from/Format data from Database
@@ -145,7 +175,7 @@ def find_parent_id(fileobject: FilePath, checking_for_file: bool = True) -> str:
     return parent_id
 
 # ***************************************************************
-# Does it exist in the Database? 
+# Does it exist in the Database?
 # ***************************************************************
 
 def file_id_exists(file_id: str) -> bool:
@@ -178,7 +208,8 @@ def create_file(file_content, virtual_file_path: FilePath, file_size: int) -> st
     # Save file to file system
     try:
         file_content.save(physical_filepath)
-        create_new_fileobject(id_num, virtual_file_path.name, virtual_file_path.extension, parent_id, file_size, True)
+        create_new_fileobject(id_num, virtual_file_path.name,
+                              virtual_file_path.extension, parent_id, file_size, True)
     except:
         return "",""
 
@@ -220,7 +251,7 @@ def create_default_file(file_content: bytes, parent_id: str,
     except:
         return "",""
 
-   
+
 
     # Return relevant info for new file
     return id_num, parent_id
@@ -238,3 +269,15 @@ def create_directory(virtual_file_path: FilePath) -> list[str]:
     create_new_fileobject(id_num, virtual_file_path.name, "", parent_id, 0, False)
 
     return id_num, parent_id
+
+# ***************************************************************
+# FUNCTIONS TO HANDLE DELETION OF NEW FILES AND DIRECTORIES
+# ***************************************************************
+
+def remove_file(parent_id: str, child_id: str, filename: str):
+    """Removes file from database"""
+
+    success = delete_fileobject(child_id, filename, parent_id)
+    if success:
+        os.remove(f"uploads/{child_id}")
+    return success

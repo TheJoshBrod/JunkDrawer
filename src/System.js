@@ -4,6 +4,31 @@ import React, { useEffect, useState } from 'react';
 // FileObject Component
 const FileObject = ({ file_name, file_type, file_extension, file_created_at, file_size, index, parent_id, child_id }) => {
 
+  const deleteFile = async () => {
+    try {
+      const response = await fetch('http://127.0.0.1:5000/delete_file', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          filename: file_name,
+          parentId: parent_id,
+          childId: child_id,
+        }),  
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.Error || 'Failed to delete the file');
+      }
+  
+    } catch (error) {
+      console.error('Error downloading the file:', error);
+      alert(error.message);
+    }
+  };
+
   const downloadFile = async (fileName, parentId) => {
   
     try {
@@ -26,11 +51,11 @@ const FileObject = ({ file_name, file_type, file_extension, file_created_at, fil
       const blob = await response.blob();
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
-      link.download = file_name;  // Use the file name from the server
-      link.click();  // Trigger the download
+      link.download = file_name;
+      link.click();
     } catch (error) {
       console.error('Error downloading the file:', error);
-      alert(error.message); // Show error to user
+      alert(error.message);
     }
   };
   
@@ -53,11 +78,14 @@ const FileObject = ({ file_name, file_type, file_extension, file_created_at, fil
       {file_type === 1 ? 
         /*File*/
         (
-        <div id={index} className="file-object" onClick={() => downloadFile()}>
-          <img className="file-icon" alt="Representation of file type" src={`/file_icons/${extension_img(file_extension)}`}/>
-          <p> {file_name}</p>
-          <p> {file_size}</p>
-          <p> {file_created_at} </p>
+        <div id={index} className="file-object" >
+          <div className="file-download" onClick={() => downloadFile()}>
+            <img className="file-icon" alt="Representation of file type" src={`/file_icons/${extension_img(file_extension)}`}/>
+            <p> {file_name}</p>
+            <p> {file_size}</p>
+            <p> {file_created_at} </p>
+          </div>
+          <div className="file-delete" onClick={() => deleteFile()}> <img className="file-icon" src="/file_icons/trash-can.png"/> </div>
         </div>
         )
         
