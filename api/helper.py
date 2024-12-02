@@ -85,8 +85,9 @@ def create_child(result: list) -> dict:
 
     file_sizes = ["B", "KB", "MB", "GB", "TB"]
     size = result[2]
-    if is_file and size != "0":
+    if is_file and size != 0:
         int_size = int(size)
+        print(int_size)
         log_size = int(math.log(int_size, 1000))
         size = str(round(int_size/(1000 ** (log_size)), 2)) + " " + file_sizes[log_size]
     else:
