@@ -79,8 +79,8 @@ const FileObject = ({ file_name, file_type, file_extension, file_created_at, fil
         /*File*/
         (
         <div id={index} className="file-object" >
+          <img className="file-icon" alt="Representation of file type" src={`/file_icons/${extension_img(file_extension)}`}/>
           <div className="file-download" onClick={() => downloadFile()}>
-            <img className="file-icon" alt="Representation of file type" src={`/file_icons/${extension_img(file_extension)}`}/>
             <p> {file_name}</p>
             <p> {file_size}</p>
             <p> {file_created_at} </p>
@@ -97,9 +97,11 @@ const FileObject = ({ file_name, file_type, file_extension, file_created_at, fil
         (
         <div id={index} className="file-object" onClick={() => window.open(`http://localhost:3000/?file_id=${child_id}`, '_self')}>
           <img className="file-icon" alt="Representation of directory" src="/file_icons/directory.png"/>
-          <p> {file_name}</p>
-          <p> {file_size}</p>
-          <p> {file_created_at} </p>
+          <div className="directory-open">
+            <p> {file_name}</p>
+            <p> {file_size}</p>
+            <p> {file_created_at} </p>
+          </div>
         </div>
       )
     
@@ -129,6 +131,10 @@ const Filesystem = ({ file_directory_id }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (parentId === null){
+      setParentId("0");
+    }
+
     const interval = setInterval(() => {
       fetch(`http://127.0.0.1:5000/get_children/${parentId}`)
         .then((response) => response.json())
@@ -176,13 +182,9 @@ const Filesystem = ({ file_directory_id }) => {
 
   return (
     <div className="file-system" onDragOver={handleDragOver} onDrop={uploadFile}>
-      <div className="file-system-header">
-        <h3>Filesystem</h3>
-        <p>Browse files and folders:</p>
-      </div>
       <div className="file-objects">
       {loading ? (
-          /* No files/directories found */
+        /* Temporary Loading Animation */
         placeholderData.map((child, index) => (
           <FileObject
             key={index}
@@ -197,7 +199,14 @@ const Filesystem = ({ file_directory_id }) => {
           />
         ))
       ) : (
-        /* Create all files/directories */
+        children.length === 0 ?
+
+        /* Empty Directory */
+        (<div><p>Empty Directory</p></div>)
+
+        :
+
+        (/* Create all files/directories */
         children.map((child, index) => (
           <FileObject
             index={index}
@@ -209,7 +218,7 @@ const Filesystem = ({ file_directory_id }) => {
             parent_id={parentId}
             child_id={child.id}
           />
-        ))
+        )))
       )}
       </div>
     </div>
