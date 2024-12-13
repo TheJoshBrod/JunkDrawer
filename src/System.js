@@ -79,8 +79,8 @@ const FileObject = ({ file_name, file_type, file_extension, file_created_at, fil
         /*File*/
         (
         <div id={index} className="file-object" >
-          <img className="file-icon" alt="Representation of file type" src={`/file_icons/${extension_img(file_extension)}`}/>
           <div className="file-download" onClick={() => downloadFile()}>
+          <img className="file-icon" alt="Representation of file type" src={`/file_icons/${extension_img(file_extension)}`}/>
             <p> {file_name}</p>
             <p> {file_size}</p>
             <p> {file_created_at} </p>
@@ -96,8 +96,9 @@ const FileObject = ({ file_name, file_type, file_extension, file_created_at, fil
         /*Directory*/
         (
         <div id={index} className="file-object" onClick={() => window.open(`http://localhost:3000/?file_id=${child_id}`, '_self')}>
-          <img className="file-icon" alt="Representation of directory" src="/file_icons/directory.png"/>
+          
           <div className="directory-open">
+            <img className="file-icon" alt="Representation of directory" src="/file_icons/directory.png"/>
             <p> {file_name}</p>
             <p> {file_size}</p>
             <p> {file_created_at} </p>
