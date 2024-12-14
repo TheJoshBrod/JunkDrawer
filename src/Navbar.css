@@ -2,4 +2,92 @@
     background-color: #4e315e;
     min-width:200px;
     width: 10%;
+    display: flex;
+    flex-direction: column;
+}
+
+.home-button{
+    user-select: none;
+    transition: all 0.1s;
+    background-color: #6d4a82;
+    border-radius: 20px 20px 20px 20px;
+    margin: 10px;
+    height: 53px;
+}
+
+.home-button:hover{
+    background-color: #8d5fa8;
+}
+
+
+.create-button{
+    user-select: none;
+    transition: all 0.1s;
+    background-color: #6d4a82;
+    border-radius: 20px 20px 20px 20px;
+    margin: 10px;
+    height: 53px;
+}
+
+.create-button:hover{
+    background-color: #8d5fa8;
+}
+
+@keyframes create-unselected {
+    0% {height: 100px;}
+    100% {height: 53px;}
+  }
+
+.create-button-unselected{
+    user-select: none;
+    transition: all 0.1s;
+    background-color: #6d4a82;
+    border-radius: 20px 20px 20px 20px;
+    margin: 10px;
+    height: 53px;
+    animation-name: create-unselected;
+    animation-duration: 0.1s;
+}
+
+.create-button-unselected:hover{
+    background-color: #8d5fa8;
+}
+
+
+@keyframes create-selected {
+    0% {height: 53px;}
+    100% {height: 100px;}
+  }
+
+.create-button-selected{
+    user-select: none;
+    background-color: #6d4a82;
+    border-radius: 20px 20px 20px 20px;
+    margin: 10px;
+    animation-name: create-selected;
+    animation-duration: 0.1s;
+}
+
+.create-option-menu {
+    visibility: hidden;
+    opacity: 0;
+    transition: all 0.1s ease;
+}
+
+.create-option-menu.visible {
+    visibility: visible;
+    opacity: 1;
+    transition: all 1s ease;
+}
+
+
+.create-options{
+    font-size: 16px;
+    background-color: #8d5fa8;
+    padding: 10px;
+}
+
+.create-options:hover{
+    background-color: #a26dc1;
+
 }

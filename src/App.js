@@ -13,11 +13,9 @@ function App() {
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Google+Sans:400,500,700|Google+Sans+Text:400,500,700|Google+Sans+Display:400,500,700|Roboto:400,500,700&amp;display=swap" nonce="CSoNFMnAbjfM1cU-RuJjcg" />
       </header>
       <div className="App">
-
         <div className="file-system-header">
-        <FileSearch className="file-search" />
-      <h3>Filesystem</h3>
-
+          <FileSearch className="file-search" />
+          <h3>Filesystem</h3>
         </div>
 
         <p>Browse files and folders:</p>

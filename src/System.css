@@ -6,7 +6,7 @@
 }
 
 .file-system{
-    align-items: center; /* Vertically centers items */
+    align-items: center;
     min-width: 700px;
     padding: 10px;
     background-color: #6d4a82;
@@ -32,11 +32,10 @@
     background-color: #6d4a82;
     width: 100%;
     padding-right: 50px;
+    transition: all 0.04s;
 }
 
 .file-download:hover{
-    /* background-color: rgb(79, 79, 79);
-    color: rgb(182, 182, 182) */
     background-color: #8d5fa8;
 }
 
