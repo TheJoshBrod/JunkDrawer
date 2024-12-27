@@ -4,8 +4,8 @@ from flask_cors import CORS
 from flask import Flask, send_file, request, jsonify
 from helper import (file_id_exists, get_file_name, create_file,
                     create_directory, get_list_of_children, update_access_time,
-                    create_default_file, remove_file)
-
+                    create_default_file, remove_file, create_default_directory)
+import sys
 
 app = Flask(__name__)
 CORS(app)
@@ -47,7 +47,6 @@ def get_children(file_id):
 @app.route("/upload_file", methods=['POST'])
 def upload_file():
     """Creates user uploaded file to appropriate directory."""
-
     # Verify file was uploaded
     if 'content' not in request.files:
         return jsonify({"error": "No file part"}), 400
@@ -69,16 +68,17 @@ def upload_file():
     file_content.seek(0)
 
     id_num, parent_id = create_file(file_content, file_path, file_size)
+    
     if id_num == "" and parent_id == "":
         return jsonify({"message": "Unsuccessful File Upload"}), 400
 
+    print(f"Success {id_num}")
     # Return success message with the unique file ID
     return jsonify({"message": f"File Uploaded Successfully with ID: {id_num}"}), 200
 
 @app.route("/upload_default_file", methods=['POST'])
 def upload_default_file():
     """Creates user uploaded file to appropriate directory."""
-
 
     # Verify file was uploaded
     if 'content' not in request.files:
@@ -89,6 +89,8 @@ def upload_default_file():
     parent_id = request.form.get('parentId')
     filename = request.form.get('filename')
 
+    if parent_id == "null":
+        parent_id = "0"
 
     # Calculate the size of the file
     file_content.seek(0, 2)
@@ -104,7 +106,7 @@ def upload_default_file():
 
     if id_num == "" and parent_id == "":
         return jsonify({"message": "Unsuccessful File Upload"}), 400
-
+    print(id_num)
     # Return success message with the unique file ID
     return jsonify({"message": f"File Uploaded Successfully with ID: {id_num}"}), 200
 
@@ -124,6 +126,36 @@ def upload_directory():
 
     # Return success message with the unique file ID
     return jsonify({"message": f"Directory Created Successfully with ID: {id_num}"}), 200
+
+@app.route("/upload_default_directory", methods=['POST'])
+def upload_default_directory():
+    """Creates user uploaded file to appropriate directory."""
+
+    # Verify directory name exists
+    if 'directoryName' not in request.form:
+        return jsonify({"error": "No file part"}), 400
+
+    # Get the directory info
+    parent_id = request.form.get('parentId')
+    filename = request.form.get('directoryName')
+    
+    # Error Checking
+    if filename == "":
+        filename = "New Directory"
+    if parent_id == "null":
+        parent_id = "0"
+
+    print(f"parent_id: {parent_id}")
+    print(f"file_name: {filename}")
+    
+
+    id_num, parent_id = create_default_directory(parent_id, filename)
+
+    if id_num == "" and parent_id == "":
+        return jsonify({"message": "Unsuccessful File Upload"}), 400
+    print(id_num)
+    # Return success message with the unique file ID
+    return jsonify({"message": f"File Uploaded Successfully with ID: {id_num}"}), 200
 
 @app.route("/delete_file", methods=['POST'])
 def delete_file():

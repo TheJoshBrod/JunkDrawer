@@ -4,8 +4,17 @@ import FileSearch from './Search';
 import FileSystem from './System';
 
 function App() {
-  const queryParams = new URLSearchParams(window.location.search);
-
+  
+  
+  const getParentId = () => {
+    const queryParams = new URLSearchParams(window.location.search);
+    let parent_id = queryParams.get("file_id");
+    if (parent_id === "null"){
+        return "0";
+    }
+    console.log(parent_id);
+    return parent_id;
+  }
 
   return (
     <>
@@ -23,8 +32,8 @@ function App() {
         <div>
         </div>
         <div className="file-system-body">
-          <Navbar/>
-          <FileSystem file_directory_id={queryParams.get("file_id")}/>
+          <Navbar     file_directory_id={getParentId()}/>
+          <FileSystem file_directory_id={getParentId()}/>
         </div>
       </div>
     </>

@@ -3,6 +3,7 @@ import sqlite3
 import os
 import uuid
 import math
+import regex as re
 from pathlib import Path
 from markupsafe import escape
 from filepath import FilePath
@@ -22,7 +23,7 @@ def update_access_time(file_id: str):
 def create_new_fileobject(id_num, virtual_file_name,
                           extension, parent_id, file_size, is_file) -> bool:
     """Creates a new fileobject entry."""
-
+    
     # Enter Entry into the DB for the new fileobject
     with sqlite3.connect('sql_db/file_system_manager.db') as conn:
         cur = conn.cursor()
@@ -42,7 +43,7 @@ def create_new_fileobject(id_num, virtual_file_name,
 
         cur.execute(insert_query, params)
         conn.commit()
-
+    print("Created new file")
 def delete_fileobject(id_num, virtual_file_name, parent_id, is_file=True) -> bool:
     """Deletes a fileobject entry."""
 
@@ -223,21 +224,32 @@ def create_default_file(file_content: bytes, parent_id: str,
 
     # Get all names of children
     children = get_list_of_children(parent_id)
-    children_names = [child["name"] for child in children] # Extracts chuldrens name into a list
+    # Extracts chuldrens name into a list
+    children_names = [child["name"] for child in children if child["is_file"] == True]
 
-    # Attempt to find file extension
-    extension = ""
-    if virtual_file_name.find(".") != -1:
-        extension = ".".join(virtual_file_name.split(".")[1:])
+    # Extract file name and extension
+    if "." in virtual_file_name:
+        file_name, extension = virtual_file_name.rsplit(".", 1)
+        extension = "." + extension  # Add the dot back for the extension
+    else:
+        file_name = virtual_file_name
+        extension = ""
 
-    # If file exists add counter next to it
-    if virtual_file_name == "":
-        virtual_file_name = "new_file"
-    if virtual_file_name in children_names:
-        counter = 1
-        while f"{virtual_file_name} ({counter})" in children_names:
+    # Handle case when the file name is empty
+    if not file_name:
+        file_name = "new_file"
+
+    file_name_ext = file_name + extension
+
+    # If the file name exists in children, find an available name by incrementing counter
+    if file_name_ext in children_names:
+        counter = 0
+        while True:
+            new_file_name_ext = f"{file_name} - copy({counter}){extension}"
+            if new_file_name_ext not in children_names:
+                break
             counter += 1
-        virtual_file_name += f" ({counter})"
+        virtual_file_name = new_file_name_ext
 
     # Generate a unique filename for the uploaded file
     id_num = str(uuid.uuid4())
@@ -251,8 +263,34 @@ def create_default_file(file_content: bytes, parent_id: str,
     except:
         return "",""
 
+    # Return relevant info for new file
+    return id_num, parent_id
+
+def create_default_directory(parent_id: str, virtual_directory_name = "New Directory") -> str:
+    """Create file entering it into filesystem. Returns id and parent_id."""
+
+    # Get all names of children
+    children = get_list_of_children(parent_id)
+    # Extracts chu\ildrens name into a list
+    children_names = [child["name"] for child in children if child["is_file"] == False]
 
 
+    # If the file name exists in children, find an available name by incrementing counter
+    if virtual_directory_name in children_names:
+        counter = 0
+        while True:
+            new_file_name_ext = f"{virtual_directory_name} - copy({counter})"
+            if new_file_name_ext not in children_names:
+                break
+            counter += 1
+        virtual_directory_name = new_file_name_ext
+
+    # Generate a unique filename for the uploaded file
+    id_num = str(uuid.uuid4())
+    
+    # Create database entry
+    create_new_fileobject(id_num, virtual_directory_name, "", parent_id, 0, False)
+  
     # Return relevant info for new file
     return id_num, parent_id
 

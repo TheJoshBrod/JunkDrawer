@@ -135,7 +135,6 @@ const Filesystem = ({ file_directory_id }) => {
     if (parentId === null){
       setParentId("0");
     }
-
     const interval = setInterval(() => {
       fetch(`http://127.0.0.1:5000/get_children/${parentId}`)
         .then((response) => response.json())
@@ -145,7 +144,7 @@ const Filesystem = ({ file_directory_id }) => {
         .catch((error) => console.error("Error fetching children:", error))
         .finally(setLoading(false));
     }, 1000);
-  
+    
     return () => clearInterval(interval);
   }, [parentId]);
 
@@ -163,7 +162,7 @@ const Filesystem = ({ file_directory_id }) => {
     event.preventDefault();
   };
 
-    const uploadFile = (event) => {
+  const uploadFile = (event) => {
       event.preventDefault();
       
       const file = event.dataTransfer ? event.dataTransfer.files[0] : event.target.files[0];
