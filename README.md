@@ -1,70 +1,34 @@
-# Getting Started with Create React App
+# Junk Drawer
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<img src="public/drawer.png" alt="Junk Drawer Logo" style="width:200px;"/>
 
-## Available Scripts
+## Purpose
 
-In the project directory, you can run:
+This repository serves as a framework for a remote file system.
 
-### `npm start`
+The primary goal is to provide a front-end React website that interacts with the personal file system of the end user. It is designed to offer flexibility and functionality for users to host and manage their files remotely.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+*Included in This Repository*:
+-    React UI: A user-friendly front-end interface for interacting with the file system.
+-    Flask API: A back-end service for handling file system operations and communication with the front end.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Set-Up (Local development)
 
-### `npm test`
+To set up this repo user must install npm v10.8.2< and python v3.12.6<
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1.) Run the `set_up_script.sh` which will install necessary packages/libraries
 
-### `npm run build`
+2.) Run the `start_script.sh` which will start the flask api and the react development server
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Disclaimer
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+This project is provided "as is" without any guarantees or warranties, express or implied. By cloning, using, or deploying this repository, you acknowledge and agree that:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. You are solely responsible for hosting, managing, and maintaining your personal security and data.
+2. TheJoshBrod takes no responsibility for any loss, corruption, theft, unauthorized access, or modification of files, directories, or other data resulting from the use of this project.
+3. Use of this project is at your own risk, and it is your responsibility to ensure that your setup is secure and complies with applicable laws and regulations.
+4. It is strongly recommended that you review the code thoroughly and understand its functionality before deployment.
 
-### `npm run eject`
+TheJoshBrod shall not be held liable for any direct, indirect, incidental, special, or consequential damages arising from the use or inability to use this project.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+By using this project, you accept and agree to the terms of this disclaimer.
