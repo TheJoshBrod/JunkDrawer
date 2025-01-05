@@ -4,7 +4,8 @@ from flask_cors import CORS
 from flask import Flask, send_file, request, jsonify
 from helper import (file_id_exists, get_file_name, create_file,
                     create_directory, get_list_of_children, update_access_time,
-                    create_default_file, remove_file, create_default_directory)
+                    create_default_file, remove_file, create_default_directory,
+                    find_files)
 import sys
 
 app = Flask(__name__)
@@ -180,6 +181,17 @@ def delete_file():
         return jsonify({"message": "Unsuccessful Deletion of File"}), 400
 
     return jsonify({"message": f"Successfully deleted {filename}"}), 200
+
+@app.route("/search_file", methods=['GET'])
+def search_file():
+    query = request.args.get('query') 
+    if query == "":
+        return jsonify({"results": []}), 200
+    results = find_files(query)
+
+    return jsonify({"results": results}), 200
+
+
 
 
 if __name__ == "__main__":

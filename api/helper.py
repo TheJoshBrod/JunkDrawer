@@ -44,6 +44,7 @@ def create_new_fileobject(id_num, virtual_file_name,
         cur.execute(insert_query, params)
         conn.commit()
     print("Created new file")
+
 def delete_fileobject(id_num, virtual_file_name, parent_id, is_file=True) -> bool:
     """Deletes a fileobject entry."""
 
@@ -174,6 +175,29 @@ def find_parent_id(fileobject: FilePath, checking_for_file: bool = True) -> str:
 
     # return parent_id of the child
     return parent_id
+
+def find_search(query: str) -> list:
+    # Enter Entry into the DB for the new fileobject
+    with sqlite3.connect('sql_db/file_system_manager.db') as conn:
+        cur = conn.cursor()
+
+        select_query = """SELECT filesystem.name FROM filesystem
+                        JOIN filesystem_fts 
+                            ON filesystem.name = filesystem_fts.name
+                        WHERE filesystem_fts.name MATCH ?
+                        ORDER BY filesystem.accessed_at
+                        """
+        
+        # Add wildcard character
+        params = (f"{query}*",)
+
+        # Execute the SELECT query
+        cur.execute(select_query, params)
+        results = cur.fetchall()
+
+    # Fetch and print the results
+    print(results)
+    return results
 
 # ***************************************************************
 # Does it exist in the Database?
@@ -319,3 +343,14 @@ def remove_file(parent_id: str, child_id: str, filename: str):
     if success:
         os.remove(f"uploads/{child_id}")
     return success
+
+
+# ***************************************************************
+# FUNCTIONS TO HANDLE SEARCHING FOR NEW FILES AND DIRECTORIES
+# ***************************************************************
+
+def find_files(query: str):
+
+    results = find_search(query)
+
+    return results
