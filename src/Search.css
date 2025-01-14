@@ -31,7 +31,7 @@ Search Div Parent Container:
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
 }
 
-.search-div-selected{
+.search-div-focused{
     position: relative;
     display: inline-block;
     border-radius: 20px 20px 20px 20px;
@@ -42,7 +42,7 @@ Search Div Parent Container:
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.4);
 }
 
-.search-div-is_hidden-selected{
+.search-div-is_hidden-focused{
     position: relative;
     display: inline-block;
     border-radius: 20px 20px 20px 20px;
@@ -71,14 +71,14 @@ Search Bar Container:
     width: 1000px;
 }
 
-.search-bar-selected{
+.search-bar-focused{
     display: flex;
     justify-content: space-between;
     width: 1000px;
 }
 
 
-.search-bar-is_hidden-selected{
+.search-bar-is_hidden-focused{
     display: flex;
     justify-content: space-between;
     width: 1000px;
@@ -95,12 +95,13 @@ Search Bar Container:
     color: white;
     border-radius: 10px;
     background-color: #483b65;
+    box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.1) inset
 }
 
 .search-field:focus{
     outline: none;
     background-color: #2d253f;
-    box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.2);
+    box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.2) inset;
 }
 
 /* 
@@ -118,14 +119,26 @@ Search Results Container:
     border-radius: 10px 10px 10px 10px;
     overflow-y: scroll;
     max-height: 265px;
+    border: 2px solid #483b65;
     background-color: #2d253f;
 }
 
-.searchResults-selected{
+.searchResults-focused{
     border-radius: 10px 10px 10px 10px;
     overflow-y: scroll;
     max-height: 265px;
+    border: 2px solid #2d253f;
     background-color: #483b65;
+}
+
+.searchResults-no_results{
+
+    border: 0px;
+}
+
+.searchResults-focused-no_results{
+    margin: -5px;
+    border: 0px;
 }
 
 .result{
@@ -137,20 +150,18 @@ Search Results Container:
 
 .result:hover{
     background-color: #483b65;
-    border-radius: 10px 10px 10px 10px;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.1);
 }
 
-.result-selected{
+.result-focused{
     display: flex;
     border-bottom: solid 1px #2d253f;
     align-items: center;
     padding-left: 10px;
 }
 
-.result-selected:hover{
+.result-focused:hover{
     background-color: #2d253f;
-    border-radius: 10px 10px 10px 10px;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.1);
 }
 
@@ -168,13 +179,13 @@ Search Tools Container:
     height: 0px;
     font-size: 0px;
 }
-.search-tools-is_hidden-selected{
+.search-tools-is_hidden-focused{
     visibility: hidden;
     font-size: 0px;
     height: 0px;
 }
 
-.search-tools-selected{
+.search-tools-focused{
     font-size: 0px;
     height: 0px;
     display: flex;
@@ -197,12 +208,49 @@ Search Tools Container:
 }
 
 
+/*
+<FileSearchSpecifier/>:
+
+{
+<div className="file-specifier">
+    <select className="file-specifier-select">
+        <options>
+         ...
+    </select>
+    "-selected" ? <button className="file-specifier-remove">
+</div>
+}
+
+*/
+
 .file-specifier{
     display: inline-flex;
     align-items: center;
+    border-radius: 10px 10px 10px 10px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+}
+
+
+.file-specifier-focused{
+    display: inline-flex;
+    align-items: center;
+    border-radius: 10px 10px 10px 10px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.3);
 }
 
 .file-specifier-select {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 10px 10px 10px 10px;
+    
+    height: 40px;
+    width: 125px;
+    border: 0px;
+    color: white;
+    background-color: #483b65;   
+ }
+
+.file-specifier-select-focused {
     border-radius: 10px 10px 10px 10px;
     height: 40px;
     width: 125px;
@@ -210,9 +258,7 @@ Search Tools Container:
     align-items: center;
     border: 0px;
     color: white;
-    background-color: #483b65;
-    
-    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.1);
+    background-color: #2d253f;
 }
 
 .file-specifier-select-selected {
@@ -226,11 +272,21 @@ Search Tools Container:
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
-    
-    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.4);
 }
 
 .file-specifier-remove{
+    padding: 0px 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+    height: 40px;
+    width: 18px;
+    border: 0px;
+    border-radius: 0px 10px 10px 0px;
+}
+
+.file-specifier-remove-focused{
     padding: 0px 10px;
     display: flex;
     justify-content: center;

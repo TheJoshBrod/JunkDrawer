@@ -1,7 +1,7 @@
 import "./Search.css"
 import React, { useEffect, useState } from 'react';
 
-const FileSearchSpecifier = ({ names, values, setter, set_as, clearer, color}) => {
+const FileSearchSpecifier = ({ names, values, setter, set_as, clearer, color, is_focused}) => {
   
   const options = values.map((value, index) => (
     <option key={value} value={value} hidden={index === 0}>
@@ -18,11 +18,11 @@ const FileSearchSpecifier = ({ names, values, setter, set_as, clearer, color}) =
 
 
   return (
-    <div className="file-specifier">
+    <div className={"file-specifier"+is_focused}>
       {set_as === "" ? 
       (
         <> 
-          <select className={"file-specifier-select" + is_selected()} value={set_as} onChange={(e) => setter()}>
+          <select className={"file-specifier-select" + is_focused} value={set_as} onChange={(e) => setter()}>
             {options}
           </select>
         </>
@@ -33,7 +33,7 @@ const FileSearchSpecifier = ({ names, values, setter, set_as, clearer, color}) =
           <select className={"file-specifier-select" + is_selected()} value={set_as} onChange={(e) => setter()} style={{ backgroundColor: color}}>
             {options}
           </select>
-          <button className="file-specifier-remove" onClick={clearer}>
+          <button className={"file-specifier-remove" + is_focused} onClick={clearer}>
             <p>X</p>
           </button>
         </>
@@ -49,6 +49,7 @@ const FileSearch = () => {
     const [results, setResults] = useState([]);
     const [isHidden, setIsHidden] = useState("-is_hidden");
     const [isFocused, setIsFocused] = useState("");
+    const [isResults, setIsResults] = useState("-no_results");
 
     const fileType_values = ["","directory","image","document","code","audio"];
     const fileType_names = ["Type:","Directory","Image","Document","Code","Audio"];
@@ -64,17 +65,26 @@ const FileSearch = () => {
     // Function to handle input change
     const handleInputChange = (event) => {
         const newValue = event.target.value;
+        
+        if (newValue.trim() === inputValue.trim()){
+          setInputValue(newValue);
+          return;  
+        }
         setInputValue(newValue);
+        
         if (newValue === ""){
           setResults([]);
           setIsHidden("-is_hidden");
+          setIsResults("-no_results");
           return
         }
         if (newValue.trim() === ''){
           setResults([]);
           setIsHidden("-is_hidden");
+          setIsResults("-no_results");
           return
         }
+        setIsResults("");
         setIsHidden("");
         fetch(`http://127.0.0.1:5000/search_file?` + new URLSearchParams({query: newValue}).toString())
         .then((response) => response.json())
@@ -83,19 +93,21 @@ const FileSearch = () => {
             data = [];
           }
           setResults(data.results);
+
+          if(data.results.length === 0){
+            setIsResults("-no_results");
+          }
         })
         .catch((error) => console.error("Error fetching children:", error))
     };
 
     const handleInputFocused = (event) => {
       if(isFocused === ""){
-        setIsFocused("-selected");
+        setIsFocused("-focused");
       }
       else{
         setIsFocused("");
       }
-      
-
     };
   
     return (
@@ -116,6 +128,7 @@ const FileSearch = () => {
             setter={setFileType}
             set_as={fileType}
             clearer={clearFileType}
+            is_focused={isFocused}
             color="#2a8aba"
           />
         </div>
@@ -126,11 +139,12 @@ const FileSearch = () => {
             setter={setFileDate}
             set_as={fileDate}
             clearer={clearFileDate}
+            is_focused={isFocused}
             color="#ba2a8a"
           />
         </div>
       </div>
-      <div className={`searchResults${isFocused}`}>
+      <div className={`searchResults${isFocused}${isResults}`}>
         {results.map((item) => (
           <div key={item} className={"result" + isFocused}>
             <p>{item}</p>
