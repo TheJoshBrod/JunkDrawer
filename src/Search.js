@@ -1,7 +1,7 @@
 import "./Search.css"
 import React, { useEffect, useState } from 'react';
 
-const FileSearchSpecifier = ({ names, values, setter, set_as, clearer, color, border_color }) => {
+const FileSearchSpecifier = ({ names, values, setter, set_as, clearer, color}) => {
   
   const options = values.map((value, index) => (
     <option key={value} value={value} hidden={index === 0}>
@@ -30,7 +30,7 @@ const FileSearchSpecifier = ({ names, values, setter, set_as, clearer, color, bo
       : 
       (
         <>
-          <select className={"file-specifier-select" + is_selected()} value={set_as} onChange={(e) => setter()} style={{ backgroundColor: color, borderColor: border_color }}>
+          <select className={"file-specifier-select" + is_selected()} value={set_as} onChange={(e) => setter()} style={{ backgroundColor: color}}>
             {options}
           </select>
           <button className="file-specifier-remove" onClick={clearer}>
@@ -50,33 +50,16 @@ const FileSearch = () => {
     const [isHidden, setIsHidden] = useState("-is_hidden");
     const [isFocused, setIsFocused] = useState("");
 
-    const [selectedFileType, setSelectedFileType] = useState("file-type");
-    const [fileTypeSelected, setFileTypeSelected] = useState("");
-    
-    const [selectedFileDate, setSelectedFileDate] = useState("file-date");
-
     const fileType_values = ["","image","document","code","audio"];
     const fileType_names = ["File Type:","Image","Document","Code","Audio"];
     const [fileType, setFileType] = useState(fileType_values[0]); 
     const clearFileType = () => {setFileType("")};
 
     const fileDate_values = ["","day","week","month","year","past_year"];
-    const fileDate_names = ["File Date:","Today","This Week","This Month","This Year " + new Date().getFullYear(), "Past Year " + ((new Date().getFullYear()) - 1)];
+    const fileDate_names = ["File Date:","Today","This Week","This Month","This Year (" + new Date().getFullYear() + ")", "Past Year (" + ((new Date().getFullYear()) - 1) + ")"];
     const [fileDate, setFileDate] = useState(fileDate_values[0]); 
     const clearFileDate = () => {setFileDate("")};
 
-    const handleFileSearchEnd = (event) => {
-      setFileTypeSelected("")
-      setSelectedFileType("file-type");
-    }
-
-    const handleFileSearchTypeChange = (event) => {
-      setFileTypeSelected("-selected");
-      setSelectedFileType(event.target.value);
-    };
-    const handleFileSearchDateChange = (event) => {
-      setSelectedFileDate(event.target.value);
-    };
 
     // Function to handle input change
     const handleInputChange = (event) => {
@@ -126,36 +109,6 @@ const FileSearch = () => {
       
       
       <div className={`search-tools${isHidden}${isFocused}`}>
-        <div className="file-selector">
-          <select className={"file-type"+fileTypeSelected} id="file-type" value={selectedFileType} onChange={handleFileSearchTypeChange}>
-            <option selected hidden value="file-type">File Type:</option>
-            <option value="Image">Image</option>
-            <option value="Document">Document</option>
-            <option value="Code">Code</option>
-            <option value="Audio">Audio</option>
-          </select>
-          {selectedFileType !== "file-type" && (
-            <button className="remove-button" onClick={handleFileSearchEnd}>
-              <p>X</p>
-            </button>
-          )}
-        </div>
-
-        <div className="file-selector">
-          <select className="file-type" id="file-date" value={selectedFileDate} onChange={handleFileSearchDateChange}>
-            <option selected hidden value="file-date">Last modified:</option>
-            <option value="day">Today</option>
-            <option value="week">This Week</option>
-            <option value="month">This Month</option>
-            <option value="year">This Year {new Date().getFullYear()}</option>
-            <option value="past-year">Past Year {(new Date().getFullYear()) - 1}</option>
-          </select>
-          {selectedFileDate !== "file-date" && (
-            <button className="remove-button" onClick={() => setSelectedFileDate("file-date")}>
-              <p>X</p>
-            </button>
-          )}
-        </div>
         <div>
           <FileSearchSpecifier
             names={fileType_names}
@@ -164,7 +117,6 @@ const FileSearch = () => {
             set_as={fileType}
             clearer={clearFileType}
             color="#04a6f7"
-            border_color="#04a6f7"
           />
         </div>
         <div>
@@ -174,8 +126,7 @@ const FileSearch = () => {
             setter={setFileDate}
             set_as={fileDate}
             clearer={clearFileDate}
-            color="#04a6f7"
-            border_color="#0406f7"
+            color="#ba2a8a"
           />
         </div>
       </div>
