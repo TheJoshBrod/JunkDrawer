@@ -146,8 +146,15 @@ Search Results Container:
 }
 
 .result{
+    display: flex;
+    align-items: center;
+    margin: -10px 0px;
     padding-left: 10px;
     z-index: 0;
+}
+
+.result:hover{
+    background-color: #483b65;
 }
 
 /* 
@@ -178,7 +185,7 @@ Search Tools Container:
     align-items: center;
     gap: 10px;
     margin-top: 30px;
-    padding-bottom: 20px;
+    padding-bottom: 30px;
 }
 
 .search-tools{
@@ -189,51 +196,8 @@ Search Tools Container:
     align-items: center;
     gap: 10px;
     margin-top: 30px;
-    padding-bottom: 20px;
+    padding-bottom: 30px;
 }
-
-
-
-.file-selector{
-    display: inline-flex;
-    align-items: center;
-}
-.remove-button{
-    padding: 0px 10px;
-    display: inline-flex;
-    align-items: center;
-    font-size: 10px;
-    height: 40px;
-    border: 1px solid #ccc;
-    border-radius: 0px 10px 10px 0px;
-}
-
-.file-type {
-    border-radius: 10px 10px 10px 10px;
-    height: 40px;
-    width: 96px;
-    display: inline-flex;
-    align-items: center;
-    /* background-color: #04a6f7; */
-    border: 1px solid #ccc;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-}
-
-.file-type-selected {
-    border-radius: 10px 0px 0px 10px;
-    height: 40px;
-    display: inline-flex;
-    align-items: center;
-    background-color: #04a6f7;
-    border: 1px solid #ccc;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-}
-
-
 
 
 .file-specifier{
@@ -248,9 +212,10 @@ Search Tools Container:
     display: inline-flex;
     align-items: center;
     border: 0px;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
+    color: white;
+    background-color: #483b65;
+    
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.1);
 }
 
 .file-specifier-select-selected {
@@ -264,11 +229,14 @@ Search Tools Container:
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
+    
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.4);
 }
 
 .file-specifier-remove{
     padding: 0px 10px;
-    display: inline-flex;
+    display: flex;
+    justify-content: center;
     align-items: center;
     font-size: 10px;
     height: 40px;

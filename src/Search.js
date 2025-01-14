@@ -116,7 +116,7 @@ const FileSearch = () => {
             setter={setFileType}
             set_as={fileType}
             clearer={clearFileType}
-            color="#04a6f7"
+            color="#2a8aba"
           />
         </div>
         <div>
