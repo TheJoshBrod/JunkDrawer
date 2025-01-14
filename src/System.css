@@ -50,7 +50,6 @@
 
 .directory-open:hover{
     background-color: #8d5fa8;
-    color: white;
 }
 
 @keyframes loading-files {

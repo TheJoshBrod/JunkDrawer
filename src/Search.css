@@ -1,0 +1,273 @@
+/* 
+
+Search Div Parent Container:
+<div className=search-div>
+    ...
+</div>
+...
+
+*/
+
+.search-div{
+    position: relative;
+    display: inline-block;
+    border-radius: 20px 20px 20px 20px;
+    padding: 10px;
+
+    /*DIFFERENCE*/
+    background-color: #2d253f;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.1);
+}
+  
+
+.search-div-is_hidden{
+    position: relative;
+    display: inline-block;
+    border-radius: 20px 20px 20px 20px;
+    padding: 10px;
+
+    /*DIFFERENCE*/
+    background-color: #2d253f;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
+}
+
+.search-div-selected{
+    position: relative;
+    display: inline-block;
+    border-radius: 20px 20px 20px 20px;
+    padding: 10px;
+
+    /*DIFFERENCE*/
+    background-color: #483b65;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.4);
+}
+
+.search-div-is_hidden-selected{
+    position: relative;
+    display: inline-block;
+    border-radius: 20px 20px 20px 20px;
+    padding: 10px;
+
+    /*DIFFERENCE*/
+    background-color: #483b65;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.4);
+}
+
+/* 
+
+Search Bar Container:
+<div className=search-bar>
+    <img>
+    <div className=search-field>
+        ...
+    </div>
+</div>
+
+*/
+
+.search-bar{
+    display: flex;
+    justify-content: space-between;
+    width: 1000px;
+}
+
+.search-bar-selected{
+    display: flex;
+    justify-content: space-between;
+    width: 1000px;
+}
+
+
+.search-bar-is_hidden-selected{
+    display: flex;
+    justify-content: space-between;
+    width: 1000px;
+}
+
+.search-field{
+    margin-bottom: 4px;
+    height: 50px;
+    font-size: 20px;
+    border: 10px;
+    width: 900px;
+    margin-right: 20px;
+    z-index: 1;
+    color: white;
+    border-radius: 10px;
+    background-color: #483b65;
+}
+
+.search-field:focus{
+    outline: none;
+    background-color: #2d253f;
+    box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.2);
+}
+
+/* 
+
+Search Results Container:
+<div className=searchResults>
+    <div className=result>
+        ...
+    </div>
+</div>
+
+*/
+
+.searchResults{
+    margin-left: -10px;
+    padding-right: 20px;
+    margin-top: -4px;
+    display: static;
+    overflow: hidden;
+    text-align: left;
+    overflow-y: scroll;
+    max-height: 200px;
+    width: 1000px;
+    z-index: 0;
+    background-color: #2d253f;
+    border-radius: 0px 20px 20px 20px;
+}
+
+.searchResults-selected{
+    z-index: 0;
+    margin-left: -10px;
+    padding-right: 20px;
+    margin-top: -4px;
+    display: static;
+    overflow: hidden;
+    text-align: left;
+    overflow-y: scroll;
+    max-height: 200px;
+    width: 1000px;
+    z-index: 0;
+    background-color: #483b65;
+    border-radius: 0px 20px 20px 20px;
+}
+
+.result{
+    padding-left: 10px;
+    z-index: 0;
+}
+
+/* 
+
+Search Tools Container:
+- File Type
+- File Date
+...
+
+*/
+
+.search-tools-is_hidden{
+    visibility: hidden;
+    height: 0px;
+    font-size: 0px;
+}
+.search-tools-is_hidden-selected{
+    visibility: hidden;
+    font-size: 0px;
+    height: 0px;
+}
+
+.search-tools-selected{
+    font-size: 0px;
+    height: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 30px;
+    padding-bottom: 20px;
+}
+
+.search-tools{
+    font-size: 0px;
+    height: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 30px;
+    padding-bottom: 20px;
+}
+
+
+
+.file-selector{
+    display: inline-flex;
+    align-items: center;
+}
+.remove-button{
+    padding: 0px 10px;
+    display: inline-flex;
+    align-items: center;
+    font-size: 10px;
+    height: 40px;
+    border: 1px solid #ccc;
+    border-radius: 0px 10px 10px 0px;
+}
+
+.file-type {
+    border-radius: 10px 10px 10px 10px;
+    height: 40px;
+    width: 96px;
+    display: inline-flex;
+    align-items: center;
+    /* background-color: #04a6f7; */
+    border: 1px solid #ccc;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.file-type-selected {
+    border-radius: 10px 0px 0px 10px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    background-color: #04a6f7;
+    border: 1px solid #ccc;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+
+.file-specifier-select {
+    border-radius: 10px 10px 10px 10px;
+    height: 40px;
+    width: 96px;
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.file-specifier{
+    display: inline-flex;
+    align-items: center;
+}
+
+.file-specifier-select-selected {
+    border-radius: 10px 0px 0px 10px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.file-specifier-remove{
+    padding: 0px 10px;
+    display: inline-flex;
+    align-items: center;
+    font-size: 10px;
+    height: 40px;
+    border: 1px solid #ccc;
+    border-radius: 0px 10px 10px 0px;
+}

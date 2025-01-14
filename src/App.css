@@ -1,9 +1,16 @@
 body, .App {
+  position: relative;
   text-align: center;
   background-color: rgb(45, 37, 63);
   color: white;
 }
 
+.file-system-header{
+  position: relative;
+  z-index: 1; 
+  height: 130px;
+  color: white;
+}
 
 .file-system-body{
   display: flex;
