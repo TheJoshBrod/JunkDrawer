@@ -50,13 +50,13 @@ const FileSearch = () => {
     const [isHidden, setIsHidden] = useState("-is_hidden");
     const [isFocused, setIsFocused] = useState("");
 
-    const fileType_values = ["","image","document","code","audio"];
-    const fileType_names = ["File Type:","Image","Document","Code","Audio"];
+    const fileType_values = ["","directory","image","document","code","audio"];
+    const fileType_names = ["Type:","Directory","Image","Document","Code","Audio"];
     const [fileType, setFileType] = useState(fileType_values[0]); 
     const clearFileType = () => {setFileType("")};
 
     const fileDate_values = ["","day","week","month","year","past_year"];
-    const fileDate_names = ["File Date:","Today","This Week","This Month","This Year (" + new Date().getFullYear() + ")", "Past Year (" + ((new Date().getFullYear()) - 1) + ")"];
+    const fileDate_names = ["Last Updated:","Today","This Week","This Month","This Year (" + new Date().getFullYear() + ")", "Past Year (" + ((new Date().getFullYear()) - 1) + ")"];
     const [fileDate, setFileDate] = useState(fileDate_values[0]); 
     const clearFileDate = () => {setFileDate("")};
 
@@ -132,7 +132,7 @@ const FileSearch = () => {
       </div>
       <div className={`searchResults${isFocused}`}>
         {results.map((item) => (
-          <div key={item} className="result">
+          <div key={item} className={"result" + isFocused}>
             <p>{item}</p>
           </div>
         ))}

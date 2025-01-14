@@ -115,46 +115,43 @@ Search Results Container:
 */
 
 .searchResults{
-    margin-left: -10px;
-    padding-right: 20px;
-    margin-top: -4px;
-    display: static;
-    overflow: hidden;
-    text-align: left;
+    border-radius: 10px 10px 10px 10px;
     overflow-y: scroll;
-    max-height: 200px;
-    width: 1000px;
-    z-index: 0;
+    max-height: 265px;
     background-color: #2d253f;
-    border-radius: 0px 20px 20px 20px;
 }
 
 .searchResults-selected{
-    z-index: 0;
-    margin-left: -10px;
-    padding-right: 20px;
-    margin-top: -4px;
-    display: static;
-    overflow: hidden;
-    text-align: left;
+    border-radius: 10px 10px 10px 10px;
     overflow-y: scroll;
-    max-height: 200px;
-    width: 1000px;
-    z-index: 0;
+    max-height: 265px;
     background-color: #483b65;
-    border-radius: 0px 20px 20px 20px;
 }
 
 .result{
     display: flex;
     align-items: center;
-    margin: -10px 0px;
     padding-left: 10px;
-    z-index: 0;
+    border-bottom: solid 1px #483b65;
 }
 
 .result:hover{
     background-color: #483b65;
+    border-radius: 10px 10px 10px 10px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.1);
+}
+
+.result-selected{
+    display: flex;
+    border-bottom: solid 1px #2d253f;
+    align-items: center;
+    padding-left: 10px;
+}
+
+.result-selected:hover{
+    background-color: #2d253f;
+    border-radius: 10px 10px 10px 10px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.1);
 }
 
 /* 
